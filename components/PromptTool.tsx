@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { copyText } from "@/lib/clipboard";
 import { generate, modeConfig, randomValues, type Field, type Mode, type Result, type Values } from "@/lib/generator";
 
 type Entry = { id: string; mode: Mode; ts: number; values: Values; results: Result[] };
@@ -22,23 +23,6 @@ function saveHistory(h: Entry[]) {
     /* storage full or blocked: history simply will not persist */
   }
 }
-async function copyText(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    const ok = document.execCommand("copy");
-    ta.remove();
-    return ok;
-  }
-}
-
 function Chips({ field, value, onChange, multi }: { field: Field; value: string | string[]; onChange: (v: string | string[]) => void; multi?: boolean }) {
   const name = useId();
   const selected = Array.isArray(value) ? value : [value];

@@ -6,7 +6,7 @@ export function pageMeta(o: { path: string; title: string; description: string; 
   return {
     title: o.title,
     description: o.description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, types: { "application/rss+xml": "/feed.xml" } },
     openGraph: {
       title: `${o.title} | ${site.short}`,
       description: o.description,

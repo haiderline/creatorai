@@ -95,3 +95,10 @@ public/         og.png, _headers
 ```
 
 To add a phrase, style or platform, edit `lib/generator.ts`. To add a tool, add an entry to `lib/tools.ts` and a mode in `lib/generator.ts`.
+
+## Viral prompt library, search and backlink tools
+
+- **Viral prompts** (`lib/viral.ts`): 40 original prompts in 6 categories. Each gets its own page at `/viral-prompts/<slug>/` and each category has a page at `/viral-prompts/category/<slug>/`. To add one, add a row to the `raw` list; pages, sitemap, RSS and search update automatically.
+- **Search**: header search icon (or press `/`) with live results, a full results page at `/search/` (set to `noindex`), and a live filter on `/viral-prompts/`. The index is built in `lib/search-index.ts` and loaded only when someone opens search.
+- **Link-building helpers**: share buttons on every prompt, `/link-to-us/` (snippets and badge), `/feed.xml`, `/llms.txt`.
+- See **BACKLINKS.md** for how to earn real backlinks.

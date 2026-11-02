@@ -9,6 +9,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PromptTool } from "@/components/PromptTool";
 import { Faq } from "@/components/Faq";
 import { AdSlot } from "@/components/AdSlot";
+import { viral } from "@/lib/viral";
 import { ToolCard } from "@/components/ToolCard";
 import { JsonLd } from "@/components/JsonLd";
 
@@ -73,6 +74,12 @@ export default async function ToolPage({ params }: { params: Promise<{ tool: str
           </section>
         )}
       </div>
+
+      <aside className="card mx-auto mt-14 max-w-3xl p-5">
+        <p className="font-semibold text-white">Need inspiration?</p>
+        <p className="mt-1 text-sm text-muted">Browse {viral.length} copy-and-paste viral prompts for products, food, nature, fantasy and action.</p>
+        <Link href="/viral-prompts/" className="btn-primary mt-4 px-6">Browse viral prompts</Link>
+      </aside>
 
       <section aria-labelledby="more" className="mt-16">
         <h2 id="more" className="text-2xl font-semibold text-white">More free tools</h2>

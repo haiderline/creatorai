@@ -3,6 +3,8 @@ import { pageMeta } from "@/lib/seo";
 import { site, abs } from "@/lib/site";
 import { tools } from "@/lib/tools";
 import { posts } from "@/lib/posts";
+import { viral } from "@/lib/viral";
+import { PromptCard } from "@/components/PromptCard";
 import { ToolCard } from "@/components/ToolCard";
 import { Faq } from "@/components/Faq";
 import { AdSlot } from "@/components/AdSlot";
@@ -37,7 +39,7 @@ export default function Home() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link href={`/${main.slug}/`} className="btn-primary px-8">Open the generator</Link>
-          <Link href="/blog/how-to-write-ai-video-prompts/" className="btn-ghost px-6">Read the prompt guide</Link>
+          <Link href="/viral-prompts/" className="btn-ghost px-6">Browse viral prompts</Link>
         </div>
         <p className="mt-5 text-sm text-muted">Runs in your browser. Your prompts never leave your device.</p>
       </section>
@@ -46,6 +48,16 @@ export default function Home() {
         <h2 id="tools" className="text-2xl font-semibold text-white">Choose a tool</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((t) => <ToolCard key={t.slug} tool={t} />)}
+        </div>
+      </section>
+
+      <section aria-labelledby="viral" className="mt-20">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="viral" className="text-2xl font-semibold text-white">Viral AI video prompts</h2>
+          <Link href="/viral-prompts/" className="text-sm text-violet-300 hover:text-violet-200">See all {viral.length} prompts</Link>
+        </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {viral.filter((_, i) => i % 7 === 0 || i % 7 === 3).slice(0, 6).map((p) => <PromptCard key={p.slug} p={p} />)}
         </div>
       </section>
 
@@ -84,7 +96,7 @@ export default function Home() {
         data={{
           "@context": "https://schema.org",
           "@graph": [
-            { "@type": "WebSite", name: site.name, url: abs("/") },
+            { "@type": "WebSite", name: site.name, url: abs("/"), potentialAction: { "@type": "SearchAction", target: `${site.url}/search/?q={search_term_string}`, "query-input": "required name=search_term_string" } },
             { "@type": "Organization", name: site.name, url: abs("/"), logo: `${site.url}/icon.svg` },
           ],
         }}

@@ -23,9 +23,12 @@ export function Footer() {
         <nav aria-label="Company">
           <p className="mb-3 text-sm font-medium text-white">Company</p>
           <ul className="space-y-2 text-sm text-muted">
+            <li><Link className="hover:text-white" href="/viral-prompts/">Viral Prompts</Link></li>
             <li><Link className="hover:text-white" href="/blog/">Blog</Link></li>
             <li><Link className="hover:text-white" href="/about/">About</Link></li>
             <li><Link className="hover:text-white" href="/contact/">Contact</Link></li>
+            <li><Link className="hover:text-white" href="/link-to-us/">Link to Us</Link></li>
+            <li><a className="hover:text-white" href="/feed.xml">RSS feed</a></li>
             <li><Link className="hover:text-white" href="/privacy-policy/">Privacy Policy</Link></li>
             <li><Link className="hover:text-white" href="/terms-of-service/">Terms of Service</Link></li>
             <li><Link className="hover:text-white" href="/disclaimer/">Disclaimer</Link></li>

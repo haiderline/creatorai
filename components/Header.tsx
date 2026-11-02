@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { tools } from "@/lib/tools";
 import { site } from "@/lib/site";
+import { SearchBox } from "./SearchBox";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -24,20 +25,17 @@ export function Header() {
             <rect width="64" height="64" rx="16" fill="url(#lg)" />
             <path d="M26 20v24l20-12z" fill="#fff" />
           </svg>
-          <span>{site.short}</span>
+          <span className="hidden min-[400px]:inline">{site.short}</span>
         </Link>
-        <nav aria-label="Main" className="relative flex items-center gap-1 text-sm">
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-controls="tools-menu"
-            onClick={() => setOpen((o) => !o)}
-            className="btn rounded-lg px-3 text-muted hover:text-white"
-          >
+        <nav aria-label="Main" className="relative flex items-center gap-0.5 text-sm">
+          <button type="button" aria-expanded={open} aria-controls="tools-menu" onClick={() => setOpen((o) => !o)} className="btn rounded-lg px-3 text-muted hover:text-white">
             Tools <span aria-hidden="true" className={`transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
           </button>
-          <Link href="/blog/" className="btn rounded-lg px-3 text-muted hover:text-white">Blog</Link>
-          <Link href="/about/" className="btn hidden rounded-lg px-3 text-muted hover:text-white sm:inline-flex">About</Link>
+          <Link href="/viral-prompts/" className="btn rounded-lg px-3 text-muted hover:text-white">
+            <span className="sm:hidden">Prompts</span><span className="hidden sm:inline">Viral Prompts</span>
+          </Link>
+          <Link href="/blog/" className="btn hidden rounded-lg px-3 text-muted hover:text-white sm:inline-flex">Blog</Link>
+          <SearchBox />
           {open && (
             <div id="tools-menu" className="card absolute right-0 top-full mt-2 w-72 p-2 shadow-2xl shadow-black/40">
               <ul>
