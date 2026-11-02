@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   description: site.tagline,
   applicationName: site.name,
   robots: { index: true, follow: true },
+  verification: {
+  google: "jkvYuCo51XsplMK44iDfHrbO-x9F6p9GnNJwf7hbahY",
+},
 };
 export const viewport: Viewport = { themeColor: "#060a18", width: "device-width", initialScale: 1 };
 
