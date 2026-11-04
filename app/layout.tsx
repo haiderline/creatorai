@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="main" className="flex-1">{children}</main>
         <Footer />
-        {ads ? (
+        {ads? (
           <Script
             id="adsense"
             async
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             crossOrigin="anonymous"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${site.adsense.client}`}
           />
-        ) : null}
+        ): null}
       </body>
     </html>
   );
