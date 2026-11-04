@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   verification: {
   google: "jkvYuCo51XsplMK44iDfHrbO-x9F6p9GnNJwf7hbahY",
 },
+other: {
+  "google-adsense-account": "ca-pub-4992884493604885",
+},
 };
 export const viewport: Viewport = { themeColor: "#060a18", width: "device-width", initialScale: 1 };
 
