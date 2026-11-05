@@ -2,7 +2,7 @@ export const site = {
   name: "CreatorAI Video Prompt Generator",
   short: "CreatorAI",
   tagline: "Free AI video prompts for Kling, Runway, Veo, Sora and Seedance",
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://aicreatortech.com").replace(/\/$/, ""),
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "haideraliline123@gmail.com",
   updated: "October 31, 2026",
   adsense: {
