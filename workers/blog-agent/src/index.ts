@@ -1,3 +1,6 @@
+interface ScheduledEvent { cron: string; scheduledTime: number; }
+interface ExecutionContext { waitUntil(promise: Promise<unknown>): void; }
+
 export interface Env {
   ANTHROPIC_API_KEY: string;
   GITHUB_TOKEN: string;
@@ -40,7 +43,7 @@ function stripTags(value: string): string {
 }
 
 function tag(xml: string, name: string): string {
-  const match = xml.match(new RegExp("<" + name + "(?:\\s[^>]*)?>([\\s\\S]*?)</" + name + ">", "i"));
+  const match = xml.match(new RegExp("<" + name + "(?:\s[^>]*)?>([\s\\S]*?)</" + name + ">", "i"));
   return match ? stripTags(match[1]) : "";
 }
 
@@ -49,7 +52,7 @@ async function collectTrends(): Promise<FeedItem[]> {
     const response = await fetch(url, { headers: { "user-agent": "CreatorAI-Blog-Agent/1.0" } });
     if (!response.ok) throw new Error("Feed returned " + response.status + ": " + url);
     const xml = await response.text();
-    return [...xml.matchAll(/<(?:item|entry)\\b[\\s\\S]*?<\\/(?:item|entry)>/gi)].slice(0, 12).map((m) => {
+    return [...xml.matchAll(/<(?:item|entry)\b[\s\\S]*?<\\/(?:item|entry)>/gi)].slice(0, 12).map((m) => {
       const block = m[0];
       const linkTag = block.match(/<link[^>]*href=["']([^"']+)["'][^>]*\/?\s*>/i);
       return {
@@ -78,7 +81,7 @@ async function githubRequest(env: Env, path: string, init: RequestInit = {}) {
     },
   });
   if (!response.ok) throw new Error("GitHub API " + response.status + ": " + (await response.text()).slice(0, 500));
-  return response.json<any>();
+  return response.json() as Promise<any>;
 }
 
 async function readPosts(env: Env): Promise<GeneratedPost[]> {
@@ -137,7 +140,7 @@ Create one article of roughly 900-1300 words. Focus on one topic, add practical 
     }),
   });
   if (!response.ok) throw new Error("Anthropic API " + response.status + ": " + (await response.text()).slice(0, 700));
-  const payload = await response.json<any>();
+  const payload = await response.json() as any;
   const raw = payload.content?.find((part: any) => part.type === "text")?.text;
   if (!raw) throw new Error("Claude returned no text");
   const article = JSON.parse(raw.replace(/^\`\`\`json\s*/i, "").replace(/\`\`\`$/, "")) as GeneratedPost;
