@@ -12,10 +12,11 @@ Configure these in Cloudflare Worker > Settings > Variables and Secrets:
 
 ## Deploy
 
-From this directory:
+From the repository root:
 
 ```sh
-npm install --save-dev wrangler
+cd workers/blog-agent
+npm install
 npx wrangler login
 npx wrangler secret put ANTHROPIC_API_KEY
 npx wrangler secret put GITHUB_TOKEN
