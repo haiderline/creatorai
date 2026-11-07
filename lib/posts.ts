@@ -1,3 +1,5 @@
+import automatedPosts from "@/content/automated-posts.json";
+
 export type Post = {
   slug: string;
   title: string;
@@ -6,6 +8,7 @@ export type Post = {
   readMinutes: number;
   sections: { h: string; p: string[] }[];
   tool: string; // tool slug to link to
+  sources?: { title: string; url: string }[];
 };
 
 export const posts: Post[] = [
@@ -54,5 +57,7 @@ export const posts: Post[] = [
     ],
   },
 ];
+
+posts.push(...(automatedPosts as Post[]));
 
 export const postBySlug = (slug: string) => posts.find((p) => p.slug === slug);
