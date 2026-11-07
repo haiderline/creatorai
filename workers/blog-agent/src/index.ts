@@ -104,7 +104,12 @@ async function writePosts(env: Env, posts: GeneratedPost[]) {
   } catch (error) {
     if (!String(error).includes("404")) throw error;
   }
-  const content = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(posts, null, 2) + "\n")));
+  const bytes = new TextEncoder().encode(JSON.stringify(posts, null, 2) + "\n");
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  const content = btoa(binary);
   await githubRequest(env, "/contents/content/automated-posts.json", {
     method: "PUT",
     body: JSON.stringify({
