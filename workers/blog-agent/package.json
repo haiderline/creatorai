@@ -2,12 +2,8 @@
   "name": "aicreatortech-blog-agent",
   "private": true,
   "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "typescript": "^5.7.0",
-    "wrangler": "^4.0.0"
+    "deploy": "npx --yes wrangler@4 deploy",
+    "dev": "npx --yes wrangler@4 dev",
+    "typecheck": "npx --yes -p typescript@5.7.3 tsc --noEmit"
   }
 }
