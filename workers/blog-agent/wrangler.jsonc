@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aicreatortech-blog-agent",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  },
+  "vars": {
+    "GITHUB_REPOSITORY": "haiderline/creatorai",
+    "ANTHROPIC_MODEL": "claude-sonnet-4-5"
+  }
+}
