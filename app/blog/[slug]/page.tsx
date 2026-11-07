@@ -45,6 +45,16 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
           <Link href={`/${tool.slug}/`} className="btn-primary mt-4 px-6">Open {tool.name}</Link>
         </aside>
       )}
+      {post.sources && post.sources.length > 0 && (
+        <aside className="mt-8 border-t border-white/10 pt-5">
+          <h2 className="text-sm font-semibold text-white">Sources</h2>
+          <ul className="mt-3 space-y-2 text-sm text-muted">
+            {post.sources.map((source) => (
+              <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-white">{source.title}</a></li>
+            ))}
+          </ul>
+        </aside>
+      )}
       <AdSlot />
       <JsonLd
         data={{
