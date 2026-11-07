@@ -52,7 +52,7 @@ async function collectTrends(): Promise<FeedItem[]> {
     const response = await fetch(url, { headers: { "user-agent": "CreatorAI-Blog-Agent/1.0" } });
     if (!response.ok) throw new Error("Feed returned " + response.status + ": " + url);
     const xml = await response.text();
-    return [...xml.matchAll(/<(?:item|entry)\b[\s\\S]*?<\\/(?:item|entry)>/gi)].slice(0, 12).map((m) => {
+    return [...xml.matchAll(/<(?:item|entry)\b[\s\S]*?<\/(?:item|entry)>/gi)].slice(0, 12).map((m) => {
       const block = m[0];
       const linkTag = block.match(/<link[^>]*href=["']([^"']+)["'][^>]*\/?\s*>/i);
       return {
