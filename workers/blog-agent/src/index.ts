@@ -43,29 +43,60 @@ function stripTags(value: string): string {
 }
 
 function tag(xml: string, name: string): string {
-  const match = xml.match(new RegExp("<" + name + "(?:\s[^>]*)?>([\s\\S]*?)</" + name + ">", "i"));
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = xml.match(new RegExp("<" + escaped + "(?:\\s[^>]*)?>([\\s\\S]*?)</" + escaped + "\\s*>", "i"));
   return match ? stripTags(match[1]) : "";
 }
 
+function extractFeedItems(xml: string): FeedItem[] {
+  const blocks = [
+    ...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item\s*>/gi),
+    ...xml.matchAll(/<entry\b[^>]*>([\s\S]*?)<\/entry\s*>/gi),
+  ];
+  return blocks.map((match) => {
+    const block = match[1];
+    const atomLink = block.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*\/?\s*>/i);
+    const guidLink = tag(block, "guid");
+    return {
+      title: tag(block, "title"),
+      link: tag(block, "link") || atomLink?.[1] || (guidLink.startsWith("http") ? guidLink : ""),
+      date: tag(block, "pubDate") || tag(block, "published") || tag(block, "updated") || tag(block, "dc:date"),
+      summary: (tag(block, "description") || tag(block, "summary") || tag(block, "content:encoded") || tag(block, "content")).slice(0, 900),
+    };
+  }).filter((item) => item.title && item.link);
+}
+
 async function collectTrends(): Promise<FeedItem[]> {
-  const batches = await Promise.allSettled(FEEDS.map(async (url) => {
-    const response = await fetch(url, { headers: { "user-agent": "CreatorAI-Blog-Agent/1.0" } });
+  const results = await Promise.allSettled(FEEDS.map(async (url) => {
+    const response = await fetch(url, {
+      headers: {
+        "user-agent": "Mozilla/5.0 (compatible; CreatorAI-Blog-Agent/1.0)",
+        accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+      },
+    });
     if (!response.ok) throw new Error("Feed returned " + response.status + ": " + url);
-    const xml = await response.text();
-    return [...xml.matchAll(/<(?:item|entry)\b[\s\S]*?<\/(?:item|entry)>/gi)].slice(0, 12).map((m) => {
-      const block = m[0];
-      const linkTag = block.match(/<link[^>]*href=["']([^"']+)["'][^>]*\/?\s*>/i);
-      return {
-        title: tag(block, "title"),
-        link: tag(block, "link") || linkTag?.[1] || "",
-        date: tag(block, "pubDate") || tag(block, "published") || tag(block, "updated"),
-        summary: (tag(block, "description") || tag(block, "summary") || tag(block, "content")).slice(0, 900),
-      };
-    }).filter((x) => x.title && x.link);
+    return { url, items: extractFeedItems(await response.text()) };
   }));
-  return batches.flatMap((r) => r.status === "fulfilled" ? r.value : [])
-    .filter((x) => !x.date || Date.now() - Date.parse(x.date) < 14 * 86400_000)
-    .slice(0, 35);
+
+  const feedDiagnostics = results.map((result, index) => ({
+    feed: FEEDS[index],
+    status: result.status,
+    count: result.status === "fulfilled" ? result.value.items.length : 0,
+    error: result.status === "rejected" ? String(result.reason).slice(0, 180) : undefined,
+  }));
+  const all = results.flatMap((result) => result.status === "fulfilled" ? result.value.items : []);
+  const recent = all.filter((item) => {
+    if (!item.date) return true;
+    const timestamp = Date.parse(item.date);
+    if (!Number.isFinite(timestamp)) return true;
+    const age = Date.now() - timestamp;
+    return age >= -86400_000 && age <= 30 * 86400_000;
+  });
+  const unique = [...new Map(recent.map((item) => [item.link, item])).values()].slice(0, 40);
+  if (unique.length < 3) {
+    throw new Error("Not enough fresh feed items to create a reliable article. Feed diagnostics: " + JSON.stringify(feedDiagnostics));
+  }
+  return unique;
 }
 
 async function githubRequest(env: Env, path: string, init: RequestInit = {}) {
@@ -106,15 +137,12 @@ async function writePosts(env: Env, posts: GeneratedPost[]) {
   }
   const bytes = new TextEncoder().encode(JSON.stringify(posts, null, 2) + "\n");
   let binary = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  }
-  const content = btoa(binary);
+  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   await githubRequest(env, "/contents/content/automated-posts.json", {
     method: "PUT",
     body: JSON.stringify({
       message: "content: publish AI trend article",
-      content,
+      content: btoa(binary),
       branch: "main",
       ...(sha ? { sha } : {}),
     }),
@@ -122,7 +150,7 @@ async function writePosts(env: Env, posts: GeneratedPost[]) {
 }
 
 async function generateArticle(env: Env, trends: FeedItem[], existing: GeneratedPost[]): Promise<GeneratedPost> {
-  const used = new Set(existing.map((p) => p.slug));
+  const used = new Set(existing.map((post) => post.slug));
   const model = env.ANTHROPIC_MODEL || "claude-sonnet-4-5";
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -148,15 +176,15 @@ Create one article of roughly 900-1300 words. Focus on one topic, add practical 
   const payload = await response.json() as any;
   const raw = payload.content?.find((part: any) => part.type === "text")?.text;
   if (!raw) throw new Error("Claude returned no text");
-  const article = JSON.parse(raw.replace(/^\`\`\`json\s*/i, "").replace(/\`\`\`$/, "")) as GeneratedPost;
+  const article = JSON.parse(raw.replace(/^```json\s*/i, "").replace(/```$/, "")) as GeneratedPost;
   if (!article.title || !article.description || !Array.isArray(article.sections) || article.sections.length < 4) {
     throw new Error("Generated article failed required-field validation");
   }
   article.slug = article.slug.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
   if (!article.slug || used.has(article.slug)) throw new Error("Duplicate or invalid article slug");
   article.date = new Date().toISOString().slice(0, 10);
-  article.readMinutes = Math.max(1, Math.ceil(article.sections.reduce((n, s) => n + s.p.join(" ").split(/\s+/).length, 0) / 220));
-  article.sources = (article.sources || []).filter((s) => trends.some((t) => t.link === s.url)).slice(0, 8);
+  article.readMinutes = Math.max(1, Math.ceil(article.sections.reduce((count, section) => count + section.p.join(" ").split(/\s+/).length, 0) / 220));
+  article.sources = (article.sources || []).filter((source) => trends.some((trend) => trend.link === source.url)).slice(0, 8);
   if (article.sources.length < 2) throw new Error("Article did not cite at least two supplied sources");
   return article;
 }
@@ -166,7 +194,6 @@ async function runAgent(env: Env) {
     throw new Error("Set ANTHROPIC_API_KEY, GITHUB_TOKEN and GITHUB_REPOSITORY secrets/variables before running.");
   }
   const trends = await collectTrends();
-  if (trends.length < 3) throw new Error("Not enough fresh feed items to create a reliable article");
   const existing = await readPosts(env);
   const article = await generateArticle(env, trends, existing);
   await writePosts(env, [...existing, article]);
@@ -184,8 +211,8 @@ export default {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/health") return json({ ok: true, service: "aicreatortech-blog-agent" });
     if (request.method === "POST" && url.pathname === "/run") {
-      const expected = env.GITHUB_TOKEN ? request.headers.get("authorization") : null;
-      if (!expected || expected !== "Bearer " + env.GITHUB_TOKEN) return json({ error: "Unauthorized" }, 401);
+      const authorization = request.headers.get("authorization");
+      if (!env.GITHUB_TOKEN || authorization !== "Bearer " + env.GITHUB_TOKEN) return json({ error: "Unauthorized" }, 401);
       try { return json(await runAgent(env)); }
       catch (error) { console.error(error); return json({ error: String(error) }, 500); }
     }
