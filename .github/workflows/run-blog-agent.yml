@@ -1,0 +1,26 @@
+name: Run AI blog agent
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare blog agent
+        env:
+          BLOG_AGENT_TOKEN: ${{ secrets.BLOG_AGENT_TOKEN }}
+        run: |
+          if [ -z "$BLOG_AGENT_TOKEN" ]; then
+            echo "Missing repository secret BLOG_AGENT_TOKEN"
+            exit 1
+          fi
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://aicreatortech-blog-agent.haiderline123.workers.dev/run" \
+            --header "Authorization: Bearer $BLOG_AGENT_TOKEN" \
+            --header "Content-Type: application/json"
