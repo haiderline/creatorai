@@ -21,6 +21,6 @@ jobs:
 
           curl --fail-with-body --silent --show-error \
             --request POST \
-            --url "https://aicreatortech-blog-agent.haiderline123.workers.dev/run" \
+            --url "https://aicreatortech-blog-agent.haideraliline123.workers.dev/run" \
             --header "Authorization: Bearer $BLOG_AGENT_TOKEN" \
             --header "Content-Type: application/json"
