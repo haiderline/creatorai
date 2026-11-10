@@ -7,6 +7,7 @@ import { abs, site } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CopyButton, DownloadButton } from "@/components/CopyButton";
 import { PromptCard } from "@/components/PromptCard";
+import { PromptArtwork } from "@/components/PromptArtwork";
 import { ShareLinks } from "@/components/ShareLinks";
 import { AdSlot } from "@/components/AdSlot";
 import { JsonLd } from "@/components/JsonLd";
@@ -28,6 +29,7 @@ export default async function PromptPage({ params }: { params: Promise<{ slug: s
   if (!p) notFound();
   const cat = catBySlug(p.catSlug)!;
   const related = viralInCat(p.catSlug).filter((x) => x.slug !== p.slug).slice(0, 3);
+  const explore = viral.filter((x) => x.catSlug !== p.catSlug && x.slug !== p.slug).slice(0, 3);
   const path = `/viral-prompts/${p.slug}/`;
 
   return (
@@ -35,6 +37,7 @@ export default async function PromptPage({ params }: { params: Promise<{ slug: s
       <Breadcrumbs items={[{ name: "Viral Prompts", href: "/viral-prompts/" }, { name: p.category, href: `/viral-prompts/category/${p.catSlug}/` }, { name: p.title, href: path }]} />
       <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{p.title}: AI video prompt</h1>
       <p className="mt-3 text-sm text-muted">{p.category} · {p.aspect} · {p.duration}</p>
+      <PromptArtwork p={p} className="mt-6 aspect-[16/9]" />
 
       <section aria-labelledby="prompt" className="card mt-6 p-5 sm:p-6">
         <h2 id="prompt" className="text-sm font-medium text-violet-200">Prompt</h2>
@@ -68,6 +71,15 @@ export default async function PromptPage({ params }: { params: Promise<{ slug: s
           <h2 id="related" className="text-2xl font-semibold text-white">More {p.category.toLowerCase()} prompts</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">{related.map((r) => <PromptCard key={r.slug} p={r} />)}</div>
           <p className="mt-5 text-sm"><Link className="text-violet-300 underline underline-offset-2" href={`/viral-prompts/category/${p.catSlug}/`}>See all {p.category} prompts</Link></p>
+        </section>
+      )}
+
+      {explore.length > 0 && (
+        <section aria-labelledby="discover-more" className="mt-12">
+          <h2 id="discover-more" className="text-2xl font-semibold text-white">Discover more viral AI prompts</h2>
+          <p className="mt-2 text-sm text-muted">Explore ideas from other categories and connect related creative formats.</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{explore.map((r) => <PromptCard key={r.slug} p={r} />)}</div>
+          <p className="mt-5 text-sm"><Link className="text-violet-300 underline underline-offset-2" href="/viral-prompts/">Browse the complete viral prompt library</Link></p>
         </section>
       )}
 
