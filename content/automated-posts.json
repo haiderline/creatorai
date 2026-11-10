@@ -1,1 +1,248 @@
-[]
+[
+  {
+    "slug": "how-to-write-negative-prompts-for-ai-video",
+    "title": "How to Write Negative Prompts for AI Video",
+    "description": "Learn when negative prompts help, what to exclude, and how to avoid weakening an AI video prompt with an overly long list.",
+    "date": "2026-11-10",
+    "readMinutes": 5,
+    "tool": "ai-video-prompt-generator",
+    "sections": [
+      {
+        "h": "What a negative prompt does",
+        "p": [
+          "A negative prompt describes elements you do not want to appear in a generated clip. Depending on the video model and interface, it may be entered in a dedicated negative-prompt field or included as a concise constraint in the main prompt. It can help communicate unwanted visual artifacts, distracting objects, or styles that conflict with the intended result.",
+          "Negative prompts are not a universal repair switch. Different models interpret them differently, and some interfaces do not expose a separate field. Check the controls available in the platform you are using and test a short exclusion list before adding more."
+        ]
+      },
+      {
+        "h": "Start with the problems you can actually see",
+        "p": [
+          "Write exclusions from the failures in your previous generation. If the subject gained extra fingers, try a focused instruction against malformed hands. If the frame contains unwanted captions, specify no text, subtitles, logos, or watermarks. If the background keeps changing, ask for a stable background and consistent scene details.",
+          "Avoid adding every common negative phrase by habit. A long list can introduce competing ideas and make it harder to understand which constraint matters. Three to six relevant exclusions are usually a better starting point than a generic paragraph of negatives."
+        ]
+      },
+      {
+        "h": "Keep positive and negative instructions aligned",
+        "p": [
+          "The main prompt should describe the image and motion you want; the negative prompt should remove the most likely distractions. For example, a product shot might request a single glass bottle rotating slowly on a clean studio surface, with soft side lighting. Its exclusions could focus on extra products, labels, text overlays, reflections that obscure the bottle, and sudden camera movement.",
+          "Do not ask for something in one field and forbid it in another. If the scene needs a busy crowd, do not exclude people. If the camera should move, do not add a broad instruction such as no motion. Make each exclusion specific to the intended shot."
+        ]
+      },
+      {
+        "h": "A simple workflow for testing",
+        "p": [
+          "Generate a first version using the main prompt alone. Note the two or three most important problems, add only those exclusions, and generate again with the same core description. Comparing the results makes it easier to tell whether the negative prompt helped.",
+          "If the result becomes less coherent, remove the least useful exclusions and simplify the wording. Keep a small library of negative prompts that have worked for your own subjects and models rather than assuming one template will work everywhere."
+        ]
+      },
+      {
+        "h": "Example negative prompt checklist",
+        "p": [
+          "For a clean product clip, consider unwanted text, extra objects, warped geometry, flickering highlights, abrupt cuts, and camera shake. For a portrait, focus on facial distortion, inconsistent clothing, distracting background changes, and unnatural movement. For a landscape, consider duplicated structures, unstable horizons, flicker, and unwanted overlays.",
+          "Treat these as starting points, not guaranteed model controls. The strongest result usually comes from a clear positive description, one main action, a deliberate camera move, and a short list of relevant exclusions."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "image-to-video-motion-prompt-guide",
+    "title": "How to Write Image-to-Video Motion Prompts",
+    "description": "Turn a still image into a controlled video by describing subject movement, camera motion, timing, and the details that should remain unchanged.",
+    "date": "2026-11-10",
+    "readMinutes": 5,
+    "tool": "image-to-video-prompt-generator",
+    "sections": [
+      {
+        "h": "Describe what changes, not everything already visible",
+        "p": [
+          "When you provide a reference image, it already communicates much of the scene: the subject, clothing, composition, colors, environment, and lighting. Your motion prompt should concentrate on what happens after the first frame. Re-describing every visible detail can distract from the movement you actually need.",
+          "Begin with one clear action. A person turns toward a window, a car rolls slowly forward, steam rises from a cup, or a flower moves gently in the breeze. One primary action gives the model a manageable target and makes the result easier to evaluate."
+        ]
+      },
+      {
+        "h": "Separate subject motion from camera motion",
+        "p": [
+          "Subject motion describes what the person or object does. Camera motion describes how the viewpoint moves. Keep them separate in your wording: the subject slowly turns its head while the camera makes a gentle push-in. This is clearer than combining several movements into one vague instruction such as make the scene dynamic.",
+          "If the reference composition is important, choose a restrained camera move or a static camera. A slow push-in can add emphasis without changing the scene dramatically. A full orbit or fast tracking move may reveal areas that are not present in the original image and can make consistency harder."
+        ]
+      },
+      {
+        "h": "Protect the parts that should stay consistent",
+        "p": [
+          "State the important visual constraints directly. You might ask the model to preserve the subject's identity, outfit, product shape, framing, background layout, or overall color palette while animating only a specific element. These instructions communicate priorities, although no prompt can guarantee perfect preservation in every model.",
+          "For branded product work, keep the movement modest and identify the product details that must not change. For character scenes, focus on the face, clothing, and silhouette. For architecture, preserve the building geometry and camera framing unless a viewpoint change is intentional."
+        ]
+      },
+      {
+        "h": "Use timing and intensity words",
+        "p": [
+          "Words such as gently, gradually, briefly, steadily, and slowly help establish the pace of an action. You can describe a simple sequence: leaves begin to move, the subject looks up, and the camera slowly pushes closer. Avoid stacking several unrelated actions into a short clip.",
+          "Match the amount of movement to the clip length. A short generation is better suited to one readable gesture or camera move than a complete sequence of events. If you need multiple beats, create separate clips and edit them together."
+        ]
+      },
+      {
+        "h": "A reusable motion-prompt structure",
+        "p": [
+          "Try this order: primary subject action, secondary environmental motion, camera movement, speed or timing, and preservation constraints. For example: the ceramic cup remains centered as a thin ribbon of steam rises and curls; the camera makes a very slow push-in; preserve the cup's shape, position, and warm window lighting; no scene change.",
+          "Change one variable at a time when refining the output. If the subject moves correctly but the camera does not, keep the action and adjust only the camera instruction. This makes iteration more predictable and helps you learn how the selected model responds."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "ai-video-prompt-examples-by-shot-type",
+    "title": "AI Video Prompt Examples for 10 Cinematic Shot Types",
+    "description": "Explore practical prompt examples for close-ups, tracking shots, orbits, aerial views, push-ins, and other common AI video shots.",
+    "date": "2026-11-10",
+    "readMinutes": 6,
+    "tool": "cinematic-camera-movement-generator",
+    "sections": [
+      {
+        "h": "Build the shot around one visual idea",
+        "p": [
+          "A useful shot prompt tells the model what the viewer should notice and how the camera should reveal it. Start with a subject and action, then add the shot type, camera speed, environment, and lighting. The examples below are starting structures: replace the subject and setting with details from your own project.",
+          "Keep the camera instruction physically understandable. A camera can push toward a subject, track beside a moving car, orbit a stationary product, or rise above a landscape. Avoid combining several large camera moves unless the sequence is deliberately designed to change viewpoint."
+        ]
+      },
+      {
+        "h": "Close-up and macro detail",
+        "p": [
+          "Close-up example: an artisan's hands carefully place a small metal component on a workbench, tight close-up, shallow depth of field, steady camera, soft directional workshop light. This shot emphasizes a precise action and keeps attention on the hands and object.",
+          "Macro example: a bead of water travels across the textured surface of a fresh green leaf, extreme macro detail, slow lateral camera slide, soft natural backlight. Use macro language when surface texture and small details are the main subject."
+        ]
+      },
+      {
+        "h": "Push-in, pull-back, and tracking",
+        "p": [
+          "Push-in example: a traveler stands at the edge of a quiet mountain overlook, the camera slowly pushes from a medium shot toward the subject, early morning mist, restrained cinematic mood. A push-in increases emphasis without requiring the subject to move.",
+          "Pull-back example: begin close on a single candle in a dark room, then slowly pull back to reveal a warm, quiet interior. Tracking example: follow a cyclist from a low side angle as they ride along a tree-lined road, smooth steady movement, late afternoon light."
+        ]
+      },
+      {
+        "h": "Orbit, crane, and aerial views",
+        "p": [
+          "Orbit example: a premium wristwatch rests on a dark stone plinth as the camera makes a slow, smooth quarter-orbit, controlled studio reflections, crisp product detail. Specify whether the camera should make a partial or full orbit so the intended movement is clear.",
+          "Crane example: a camera rises smoothly from a close view of flowers to reveal a garden ceremony. Aerial example: a drone glides forward above a winding coastal road, revealing the cliffs and ocean beyond. These moves work best when the environment can be understood from a wider viewpoint."
+        ]
+      },
+      {
+        "h": "Static, handheld, and point-of-view shots",
+        "p": [
+          "Static example: a cup of coffee sits beside a rain-covered window while distant traffic passes outside, locked-off camera, subtle steam, soft overcast light. A static camera is useful when the subject or environment supplies enough motion on its own.",
+          "Handheld example: a documentary-style view follows a chef preparing vegetables at a busy counter, gentle natural handheld movement, practical kitchen lighting. Point-of-view example: a hiker's boots step along a narrow forest trail, first-person perspective, steady forward movement, dappled sunlight."
+        ]
+      },
+      {
+        "h": "Make each prompt testable",
+        "p": [
+          "Choose one shot type, one speed, and one main action for the first generation. If the result feels too slow, adjust the speed. If the subject is poorly framed, simplify the camera path. Avoid changing lighting, subject, camera, and style simultaneously because it becomes difficult to identify the cause of an improvement or failure.",
+          "For a sequence, vary the shot type across separate clips: establish the location with a wide view, show the subject with a medium shot, then reveal a meaningful detail with a close-up. This creates visual variety while keeping each individual generation relatively simple."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "how-to-keep-ai-video-characters-consistent",
+    "title": "How to Keep Characters Consistent in AI-Generated Videos",
+    "description": "Practical ways to maintain a character's appearance across AI video shots using reference images, concise descriptions, and controlled motion.",
+    "date": "2026-11-10",
+    "readMinutes": 5,
+    "tool": "image-to-video-prompt-generator",
+    "sections": [
+      {
+        "h": "Why character consistency is difficult",
+        "p": [
+          "A text prompt is an instruction, not a permanent character model. When a new clip is generated, the system may reinterpret facial features, clothing, proportions, or small accessories. Changes in camera angle, lighting, pose, and environment can make those differences more noticeable.",
+          "The most reliable workflow is to reduce unnecessary variation. Establish a clear reference, keep the description stable, use manageable camera movements, and review each shot before building the next one."
+        ]
+      },
+      {
+        "h": "Create a clear character reference",
+        "p": [
+          "Prepare a reference image that clearly shows the character's face, hairstyle, clothing, and overall silhouette. Avoid cluttered backgrounds, extreme poses, heavy occlusion, or lighting that hides important features. If the project requires several angles, create a small reference set with consistent wardrobe and visual style.",
+          "Write a compact character description and reuse it consistently. Include only identifying visual details that matter to the story, such as a short curly hairstyle, a navy jacket, a silver pendant, or a distinctive color palette. Avoid rewriting the description differently for every shot."
+        ]
+      },
+      {
+        "h": "Use image-to-video for controlled movement",
+        "p": [
+          "When a tool supports image-to-video, begin from the approved reference frame and describe the action you want. For example: the character turns slightly toward the camera and smiles, the camera remains steady, preserve facial features, hairstyle, clothing, and background composition.",
+          "Start with subtle movements such as a head turn, a blink, a small gesture, or a slow walk. Large body rotations, fast action, dramatic lighting changes, and complex camera moves can make it harder to preserve the reference appearance."
+        ]
+      },
+      {
+        "h": "Plan continuity between shots",
+        "p": [
+          "Keep a simple continuity sheet for each scene: character description, wardrobe, accessories, location, lighting direction, time of day, and the action at the start and end of the shot. Use it when writing prompts for the next clip so that details do not drift accidentally.",
+          "When cutting between shots, match at least one or two visual anchors. The character can keep the same jacket and accessory, or the next shot can begin with a similar pose and lighting direction. These anchors help the edit feel connected even when each clip is generated separately."
+        ]
+      },
+      {
+        "h": "Review and repair one issue at a time",
+        "p": [
+          "Compare generated frames against the reference at the beginning, middle, and end of the clip. Look for changes in face shape, clothing, accessories, body proportions, and background. If one detail changes, simplify the action or camera move and regenerate before adding more complexity.",
+          "Do not assume that repeating a character name alone will preserve identity across separate generations. Use reference-image features where available, keep prompts consistent, and treat the output as footage that needs review and editing rather than a guaranteed continuous performance."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "why-ai-video-generations-look-wrong-and-how-to-fix-them",
+    "title": "Why AI Video Generations Look Wrong: 7 Problems and Fixes",
+    "description": "Troubleshoot flicker, distorted objects, unwanted camera movement, inconsistent subjects, and other common AI video generation problems.",
+    "date": "2026-11-10",
+    "readMinutes": 6,
+    "tool": "ai-video-prompt-generator",
+    "sections": [
+      {
+        "h": "Too many actions in one clip",
+        "p": [
+          "A prompt that asks a subject to walk, turn, pick something up, speak, and leave the room may produce a confusing sequence, especially in a short clip. The model has to resolve several actions and transitions at once.",
+          "Fix it by choosing one primary action and making it observable. Split a longer sequence into separate clips, then connect them in an editor. A clear action usually produces a more readable result than a long list of events."
+        ]
+      },
+      {
+        "h": "Flickering details and changing backgrounds",
+        "p": [
+          "Small textures, reflections, patterns, and background objects can shift between frames. Busy scenes and fast movement can make these changes more noticeable.",
+          "Simplify the background, reduce unnecessary motion, and state which visual elements should remain stable. For product shots, use a clean environment and controlled lighting. For landscapes, avoid adding several moving weather effects at once."
+        ]
+      },
+      {
+        "h": "Distorted hands, faces, or objects",
+        "p": [
+          "Complex anatomy, overlapping objects, tiny details, and unusual poses can be difficult to render consistently. A prompt cannot guarantee perfect geometry, but it can reduce ambiguity.",
+          "Use a clearer pose, a less obstructed view, and a simpler action. Keep important objects prominent in the frame. If a close-up repeatedly fails, try a slightly wider composition or a shorter movement."
+        ]
+      },
+      {
+        "h": "The camera moves when it should stay still",
+        "p": [
+          "Words such as cinematic, dynamic, and dramatic can be interpreted as an invitation to move the camera. If the composition must remain fixed, explicitly request a locked-off or static camera and describe only the motion that should happen within the scene.",
+          "If you need camera movement, name one move and its speed. For example, use a slow push-in rather than asking for a sweeping, dynamic, cinematic camera move."
+        ]
+      },
+      {
+        "h": "The subject or character changes appearance",
+        "p": [
+          "Appearance drift can occur when a clip has major pose changes, large camera moves, or a new environment. Use a reference image when the platform supports it, repeat a concise set of identifying details, and keep wardrobe and lighting consistent across shots.",
+          "For image-to-video, ask for a small action while preserving the key visual features. Review the start, middle, and end frames and simplify the movement if the subject changes too much."
+        ]
+      },
+      {
+        "h": "The result looks generic or misses the intended mood",
+        "p": [
+          "Broad adjectives such as beautiful, epic, or professional do not explain what should appear on screen. Replace them with visible details: the direction and softness of light, the materials in the environment, the subject's action, the camera angle, and the color palette.",
+          "Use a specific visual reference in words without relying on contradictory style labels. A prompt that combines several unrelated aesthetics can produce an unclear result. Choose one dominant look and support it with concrete details."
+        ]
+      },
+      {
+        "h": "A practical troubleshooting loop",
+        "p": [
+          "Keep the subject and setting constant while you test one change at a time: first the action, then the camera, then lighting or style. Save the prompt and note what changed between attempts. This turns random retries into a repeatable process.",
+          "Before generating again, ask whether the prompt has one clear subject, one main action, a feasible camera move, and enough visual detail to guide the scene. Remove instructions that do not contribute to the shot."
+        ]
+      }
+    ]
+  }
+]
