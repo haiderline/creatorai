@@ -128,7 +128,7 @@ export const viral: ViralPrompt[] = raw.map(([c, title, aspect, duration, tags, 
   tags: tags.split(",").map((t) => t.trim()),
   why,
   prompt,
-  date: "2026-11-02",
+  date: "2026-11-10",
 }));
 
 export const viralBySlug = (slug: string) => viral.find((p) => p.slug === slug);
