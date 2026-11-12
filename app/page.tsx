@@ -3,7 +3,7 @@ import { pageMeta } from "@/lib/seo";
 import { site, abs } from "@/lib/site";
 import { tools } from "@/lib/tools";
 import { posts } from "@/lib/posts";
-import { viral } from "@/lib/viral";
+import { cats, viral } from "@/lib/viral";
 import { PromptCard } from "@/components/PromptCard";
 import { ToolCard } from "@/components/ToolCard";
 import { Faq } from "@/components/Faq";
@@ -58,6 +58,22 @@ export default function Home() {
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {viral.filter((_, i) => i % 7 === 0 || i % 7 === 3).slice(0, 6).map((p) => <PromptCard key={p.slug} p={p} />)}
+        </div>
+      </section>
+
+      <section aria-labelledby="prompt-categories" className="mt-16">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="prompt-categories" className="text-2xl font-semibold text-white">Explore AI video prompt categories</h2>
+          <Link href="/viral-prompts/" className="text-sm text-violet-300 hover:text-violet-200">Explore the complete prompt library</Link>
+        </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {cats.map((category) => (
+            <Link key={category.slug} href={`/viral-prompts/category/${category.slug}/`} className="card block p-5 hover:border-violet-400/50">
+              <h3 className="font-semibold text-white">{category.name}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted">{category.intro}</p>
+              <span className="mt-3 inline-block text-sm text-violet-300">Browse {category.name} prompts →</span>
+            </Link>
+          ))}
         </div>
       </section>
 
