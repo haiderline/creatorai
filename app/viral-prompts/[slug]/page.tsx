@@ -50,17 +50,29 @@ export default async function PromptPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <div className="prose-page">
-        <h2>Why this prompt works</h2>
+        <h2>What this AI video prompt is designed to show</h2>
         <p>{p.why}</p>
-        <h2>Recommended settings</h2>
+        <p>This example is structured around a single visual idea: establish the subject, make its main action easy to understand, then use camera movement and lighting to guide attention. That focused structure is useful when you want a short clip rather than a sequence of unrelated events.</p>
+        <h2>Prompt breakdown</h2>
         <ul>
-          <li>Aspect ratio: {p.aspect}</li>
-          <li>Duration: {p.duration}</li>
-          <li>Works with Kling, Runway, Veo, Sora and Seedance. Choose the format that matches where you will publish.</li>
+          <li><strong>Visual subject:</strong> identify the main subject and its defining appearance.</li>
+          <li><strong>Motion:</strong> keep the action specific and physically understandable.</li>
+          <li><strong>Camera:</strong> use the stated camera movement as the shot's point of view, not as a second competing action.</li>
+          <li><strong>Atmosphere:</strong> use lighting, environment and texture to establish the visual style.</li>
         </ul>
-        <h2>How to adapt it</h2>
+        <h2>Starting format and duration</h2>
+        <ul>
+          <li>Suggested aspect ratio for this concept: {p.aspect}</li>
+          <li>Suggested clip length: {p.duration}</li>
+          <li>These are starting points from the prompt brief, not guaranteed settings supported by every model. Select the closest available options in your video tool.</li>
+        </ul>
+        <h2>How to adapt this prompt</h2>
+        <p>Change the subject or setting while keeping the shot structure intact. For a more controlled result, edit one variable per generation: first the action, then the camera movement, then lighting or style. If the output becomes visually inconsistent, shorten the action and remove competing camera instructions.</p>
         <ul>{cat.tips.map((t) => <li key={t}>{t}</li>)}</ul>
+        <h2>Platform compatibility</h2>
+        <p>You can adapt this text prompt for Kling, Runway, Veo, Sora or Seedance, but each platform has different controls, model versions and prompt interpretation. Treat the wording as a starting point and follow the current platform's own aspect-ratio, duration and audio options.</p>
         <p>Related topics: {p.tags.join(", ")}.</p>
+        <p><strong>Visual disclosure:</strong> the artwork on this page is a generated-style editorial illustration used to represent the prompt concept. It is not a screenshot or a verified output from Kling, Runway, Veo, Sora or Seedance.</p>
       </div>
 
       <div className="mt-8"><ShareLinks path={path} title={`${p.title}: AI video prompt`} /></div>
