@@ -31,6 +31,7 @@ export function Header() {
           <button type="button" aria-expanded={open} aria-controls="tools-menu" onClick={() => setOpen((o) => !o)} className="btn rounded-lg px-3 text-muted hover:text-white">
             Tools <span aria-hidden="true" className={`transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
           </button>
+          <Link href="/ad-studio/" className="btn rounded-lg px-3 text-violet-200 hover:text-white">Ad Studio</Link>
           <Link href="/viral-prompts/" className="btn rounded-lg px-3 text-muted hover:text-white">
             <span className="sm:hidden">Prompts</span><span className="hidden sm:inline">Viral Prompts</span>
           </Link>
