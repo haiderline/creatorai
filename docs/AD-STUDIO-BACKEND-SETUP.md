@@ -67,6 +67,8 @@ Set `APP_ORIGIN=https://aicreatortech.com` in Cloudflare Pages production variab
 - The API checks same-origin requests and validates all brief fields server-side.
 - Credits are debited server-side; client input cannot set a balance.
 - D1 batch operations are used for the balance update and ledger write.
+- Generation requests require a caller-supplied idempotency key; completed replays return the saved result without charging again.
+- Refund ledger insertion is performed before the matching balance credit in a guarded batch, so duplicate refunds do not inflate the wallet.
 - Failed generation refunds are guarded by a unique refund ledger index.
 - OpenAI credentials are read only from Cloudflare environment secrets.
 - Never add secrets to GitHub, source files, NEXT_PUBLIC variables, logs or client bundles.

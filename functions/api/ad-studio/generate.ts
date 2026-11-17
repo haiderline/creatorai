@@ -66,11 +66,12 @@ async function reserveCredits(db: NonNullable<PagesContext["env"]["DB"]>, userId
 
 async function refundCredits(db: NonNullable<PagesContext["env"]["DB"]>, userId: string, generationId: string) {
   await db.batch([
-    db.prepare("UPDATE credit_accounts SET balance = balance + ?, updated_at = datetime('now') WHERE user_id = ?").bind(CAMPAIGN_COST, userId),
     db.prepare(`INSERT INTO credit_ledger (id, user_id, delta, reason, reference_id, created_at)
       SELECT ?, ?, ?, 'generation_failed_refund', ?, datetime('now')
       WHERE NOT EXISTS (SELECT 1 FROM credit_ledger WHERE user_id = ? AND reason = 'generation_failed_refund' AND reference_id = ?)`)
       .bind(crypto.randomUUID(), userId, CAMPAIGN_COST, generationId, userId, generationId),
+    db.prepare("UPDATE credit_accounts SET balance = balance + ?, updated_at = datetime('now') WHERE user_id = ? AND changes() = 1")
+      .bind(CAMPAIGN_COST, userId),
   ]);
 }
 
@@ -85,7 +86,8 @@ function extractOutput(payload: any): string {
   return parts.join("\n");
 }
 
-export const onRequestPost = async ({ request, env }: PagesContext): Promise<Response> => {
+export const onRequest = async ({ request, env }: PagesContext): Promise<Response> => {
+  if (request.method !== "POST") return json({ error: "Method not allowed." }, 405);
   if (!isSameOrigin(request, env)) return json({ error: "Origin not allowed." }, 403);
   const user = await requireUser(request, env);
   if (!user) return json({ error: "Please sign in to generate an ad campaign." }, 401);
@@ -104,6 +106,19 @@ export const onRequestPost = async ({ request, env }: PagesContext): Promise<Res
   ).bind(user.id).first<{ total: number }>();
   if ((recent?.total ?? 0) >= 10) return json({ error: "Daily generation limit reached. Please try again tomorrow." }, 429);
 
+  const idempotencyKey = request.headers.get("Idempotency-Key") || "";
+  if (!/^[a-zA-Z0-9_-]{16,80}$/.test(idempotencyKey)) {
+    return json({ error: "A valid Idempotency-Key header is required." }, 400);
+  }
+  const existing = await env.DB.prepare(
+    "SELECT id, status, output_json, credits_charged FROM generations WHERE user_id = ? AND idempotency_key = ?"
+  ).bind(user.id, idempotencyKey).first<{ id: string; status: string; output_json: string | null; credits_charged: number }>();
+  if (existing?.status === "completed" && existing.output_json) {
+    const account = await env.DB.prepare("SELECT balance FROM credit_accounts WHERE user_id = ?").bind(user.id).first<{ balance: number }>();
+    return json({ generationId: existing.id, creditsCharged: 0, creditsRemaining: account?.balance ?? 0, result: JSON.parse(existing.output_json), replayed: true });
+  }
+  if (existing) return json({ error: "This generation request is already being processed or has failed. Start a new request." }, 409);
+
   const generationId = crypto.randomUUID();
   const reserved = await reserveCredits(env.DB, user.id, generationId);
   if (!reserved) {
@@ -112,8 +127,8 @@ export const onRequestPost = async ({ request, env }: PagesContext): Promise<Res
   }
 
   await env.DB.prepare(
-    "INSERT INTO generations (id, user_id, input_json, status, credits_charged, created_at) VALUES (?, ?, ?, 'processing', ?, datetime('now'))"
-  ).bind(generationId, user.id, JSON.stringify(brief), CAMPAIGN_COST).run();
+    "INSERT INTO generations (id, user_id, idempotency_key, input_json, status, credits_charged, created_at) VALUES (?, ?, ?, ?, 'processing', ?, datetime('now'))"
+  ).bind(generationId, user.id, idempotencyKey, JSON.stringify(brief), CAMPAIGN_COST).run();
 
   try {
     const prompt = [
@@ -155,7 +170,3 @@ export const onRequestPost = async ({ request, env }: PagesContext): Promise<Res
   }
 };
 
-export const onRequest = async ({ request, env }: PagesContext): Promise<Response> => {
-  if (request.method !== "POST") return json({ error: "Method not allowed." }, 405);
-  return onRequestPost({ request, env, params: {} });
-};

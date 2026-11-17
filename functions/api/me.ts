@@ -1,8 +1,9 @@
 import { requireUser } from "../_lib/auth";
-import { isSameOrigin, json } from "../_lib/http";
+import { json } from "../_lib/http";
 import type { PagesContext } from "../_lib/types";
 
-export const onRequestGet = async ({ request, env }: PagesContext): Promise<Response> => {
+export const onRequest = async ({ request, env }: PagesContext): Promise<Response> => {
+  if (request.method !== "GET") return json({ error: "Method not allowed." }, 405);
   const user = await requireUser(request, env);
   if (!user) return json({ error: "Sign in to access your CreatorAI account." }, 401);
   if (!env.DB) return json({ error: "Account services are being configured. Please try again later." }, 503);
@@ -16,13 +17,4 @@ export const onRequestGet = async ({ request, env }: PagesContext): Promise<Resp
   ).bind(user.id).first<{ balance: number }>();
 
   return json({ user: { id: user.id, email: user.email ?? null }, credits: account?.balance ?? 0 });
-};
-
-export const onRequestOptions = async (): Promise<Response> =>
-  new Response(null, { status: 204, headers: { "Allow": "GET, OPTIONS" } });
-
-export const onRequest = async ({ request, env }: PagesContext): Promise<Response> => {
-  if (request.method !== "GET") return json({ error: "Method not allowed." }, 405);
-  if (!isSameOrigin(request, env)) return json({ error: "Origin not allowed." }, 403);
-  return onRequestGet({ request, env, params: {} });
 };
