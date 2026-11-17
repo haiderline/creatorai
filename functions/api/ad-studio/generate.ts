@@ -101,11 +101,6 @@ export const onRequest = async ({ request, env }: PagesContext): Promise<Respons
   const brief = validateBrief(body);
   if (!brief) return json({ error: "Please complete all required fields using the available options." }, 400);
 
-  const recent = await env.DB.prepare(
-    "SELECT COUNT(*) AS total FROM generations WHERE user_id = ? AND created_at >= datetime('now', '-1 day')"
-  ).bind(user.id).first<{ total: number }>();
-  if ((recent?.total ?? 0) >= 10) return json({ error: "Daily generation limit reached. Please try again tomorrow." }, 429);
-
   const idempotencyKey = request.headers.get("Idempotency-Key") || "";
   if (!/^[a-zA-Z0-9_-]{16,80}$/.test(idempotencyKey)) {
     return json({ error: "A valid Idempotency-Key header is required." }, 400);
@@ -118,6 +113,11 @@ export const onRequest = async ({ request, env }: PagesContext): Promise<Respons
     return json({ generationId: existing.id, creditsCharged: 0, creditsRemaining: account?.balance ?? 0, result: JSON.parse(existing.output_json), replayed: true });
   }
   if (existing) return json({ error: "This generation request is already being processed or has failed. Start a new request." }, 409);
+
+  const recent = await env.DB.prepare(
+    "SELECT COUNT(*) AS total FROM generations WHERE user_id = ? AND created_at >= datetime('now', '-1 day')"
+  ).bind(user.id).first<{ total: number }>();
+  if ((recent?.total ?? 0) >= 10) return json({ error: "Daily generation limit reached. Please try again tomorrow." }, 429);
 
   const generationId = crypto.randomUUID();
   try {
