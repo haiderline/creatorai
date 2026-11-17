@@ -120,15 +120,21 @@ export const onRequest = async ({ request, env }: PagesContext): Promise<Respons
   if (existing) return json({ error: "This generation request is already being processed or has failed. Start a new request." }, 409);
 
   const generationId = crypto.randomUUID();
+  try {
+    await env.DB.prepare(
+      "INSERT INTO generations (id, user_id, idempotency_key, input_json, status, credits_charged, created_at) VALUES (?, ?, ?, ?, 'processing', ?, datetime('now'))"
+    ).bind(generationId, user.id, idempotencyKey, JSON.stringify(brief), CAMPAIGN_COST).run();
+  } catch {
+    return json({ error: "This generation request has already been submitted. Check your campaign history before retrying." }, 409);
+  }
+
   const reserved = await reserveCredits(env.DB, user.id, generationId);
   if (!reserved) {
+    await env.DB.prepare("UPDATE generations SET status = 'failed', credits_charged = 0 WHERE id = ? AND user_id = ?")
+      .bind(generationId, user.id).run();
     const account = await env.DB.prepare("SELECT balance FROM credit_accounts WHERE user_id = ?").bind(user.id).first<{ balance: number }>();
     return json({ error: "Not enough credits.", credits: account?.balance ?? 0, required: CAMPAIGN_COST }, 402);
   }
-
-  await env.DB.prepare(
-    "INSERT INTO generations (id, user_id, idempotency_key, input_json, status, credits_charged, created_at) VALUES (?, ?, ?, ?, 'processing', ?, datetime('now'))"
-  ).bind(generationId, user.id, idempotencyKey, JSON.stringify(brief), CAMPAIGN_COST).run();
 
   try {
     const prompt = [
