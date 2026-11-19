@@ -48,7 +48,7 @@ export const tools: Tool[] = [
       { q: "Does it generate the video itself?", a: "No. It writes the prompt. You paste it into the video tool of your choice." },
       { q: "Are my prompts stored anywhere?", a: "Your history is saved only in your own browser using local storage. We never receive it, and you can clear it at any time." },
     ],
-    related: ["how-to-write-ai-video-prompts", "text-to-video-vs-image-to-video"],
+    related: ["how-to-write-ai-video-prompts", "text-to-video-vs-image-to-video", "a-repeatable-ai-video-prompt-testing-workflow", "plan-multi-shot-ai-video-sequences"],
   },
   {
     slug: "image-to-video-prompt-generator",
@@ -80,7 +80,7 @@ export const tools: Tool[] = [
       { q: "Which camera movement is safest for image-to-video?", a: "A slow push-in, a slow pull-back or a gentle parallax move usually keeps the original image intact." },
       { q: "Can I use this for product photos?", a: "Yes. Choose Subtle motion, a slow orbit or push-in, and add light flicker or floating particles for a premium feel." },
     ],
-    related: ["text-to-video-vs-image-to-video", "how-to-write-ai-video-prompts"],
+    related: ["text-to-video-vs-image-to-video", "how-to-write-ai-video-prompts", "ai-product-video-prompts-that-show-material-and-detail", "plan-multi-shot-ai-video-sequences"],
   },
   {
     slug: "cinematic-camera-movement-generator",
@@ -112,7 +112,7 @@ export const tools: Tool[] = [
       { q: "What is an FPV shot?", a: "A first-person drone-style shot that moves fast and fluidly through an environment. It is popular for reveals and action." },
       { q: "Can I combine two camera moves?", a: "You can try, for example a slow push-in with a slight tilt up, but simple single moves are more consistent." },
     ],
-    related: ["camera-movement-terms-for-ai-video", "how-to-write-ai-video-prompts"],
+    related: ["camera-movement-terms-for-ai-video", "how-to-write-ai-video-prompts", "plan-multi-shot-ai-video-sequences"],
   },
   {
     slug: "ai-animation-prompt-generator",
